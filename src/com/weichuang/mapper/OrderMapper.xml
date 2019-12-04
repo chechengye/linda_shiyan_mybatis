@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weichuang.mapper.OrderMapper">
+
+    <resultMap id="orderMap" type="Order">
+        <!--它也会帮我们把之前相同名称赋值上去-->
+        <result property="userId" column="user_id"></result>
+        <result property="orderNo" column="order_no"></result>
+    </resultMap>
+    <select id="getAllOrders" resultMap="orderMap">
+        select * from t_order
+    </select>
+
+    <resultMap id="order_user" type="Order">
+        <result property="userId" column="user_id"></result>
+        <result property="orderNo" column="order_no"></result>
+        <result property="createtime" column="createtime"></result>
+        <!--一对一查询使用-->
+        <association property="user" javaType="User">
+            <result property="name" column="name"></result>
+            <result property="money" column="money"></result>
+        </association>
+    </resultMap>
+    <select id="getAllOrdersAndUser" resultMap="order_user">
+          select o.createtime , o.order_no , u.name , u.money from t_order o left JOIN t_user u on o.user_id = u.id
+    </select>
+
+</mapper>

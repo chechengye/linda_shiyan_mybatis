@@ -5,6 +5,7 @@
 <configuration>
     <typeAliases>
         <package name="com.weichuang.pojo"/>
+        <package name="com.weichuang.vo"/>
     </typeAliases>
     <!-- 和spring整合后 environments配置将废除 -->
     <environments default="development">

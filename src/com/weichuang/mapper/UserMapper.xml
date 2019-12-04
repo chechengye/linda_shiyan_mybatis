@@ -10,4 +10,59 @@
     <select id="getUserById" resultType="User" parameterType="Integer">
         select * from t_user where id = #{id}
     </select>
+
+    <insert id="addUser" parameterType="User">
+        insert into t_user values (null , #{name} , #{money});
+    </insert>
+
+    <select id="getUsersByQueryVo" parameterType="QueryVo" resultType="User">
+        select * from t_user where name like "%"#{user.name}"%"
+    </select>
+
+    <select id="getUserCount" resultType="Integer">
+        select count(*) from t_user
+    </select>
+
+    <sql id="userSelector">select * from t_user</sql>
+    <select id="getUsersBySexAndName" resultType="User" parameterType="User">
+        <include refid="userSelector"/>
+        <where>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+    <select id="getUsersByIds" resultType="User">
+        <include refid="userSelector"/>
+        <where>
+            <foreach collection="list" open=" id in (" separator="," close=")" item="id">
+                #{id}
+            </foreach>
+        </where>
+
+    </select>
+    <select id="getUserListByQueryVo" resultType="User" parameterType="QueryVo">
+        <include refid="userSelector"/>
+        <where>
+            <foreach collection="ids" open=" id in (" separator="," close=")" item="id">
+                #{id}
+            </foreach>
+        </where>
+
+    </select>
+    <resultMap id="user_order" type="User">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="money" column="money"></result>
+        <collection property="orderList" ofType="Order">
+            <result property="orderNo" column="order_no"></result>
+            <result property="createtime" column="createtime"></result>
+        </collection>
+    </resultMap>
+    <select id="getAllUsersAndOrders" resultMap="user_order">
+        select u.id , o.createtime , o.order_no , u.name , u.money from t_user u left JOIN t_order o on o.user_id = u.id
+    </select>
 </mapper>
